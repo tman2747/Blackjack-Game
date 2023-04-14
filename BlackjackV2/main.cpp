@@ -45,6 +45,7 @@ private:
 
 
 public:
+	Card() = default;
 	Card(Rank rank, Suit suit);
 	~Card();
 	void print() const;
@@ -119,16 +120,59 @@ int Card::value() const
     }
 }
 
-int main()
-{
-	const Card cardQueenHearts{ Card::rank_queen, Card::heart };
-	cardQueenHearts.print();
-	std::cout << " has the value " << cardQueenHearts.value() << '\n';
 
-	return 0;
+class Deck
+{
+private:
+	std::array<Card,52> m_deck;
+
+public:
+	Deck();
+	~Deck();
+	void print()const;
+
+
+};
+
+Deck::Deck()
+{
+	int Deckpos = 0;
+	for (int i = 0; i < Card::max_suits; i++)
+	{
+		for (int j = 0; j < Card::max_ranks; j++)
+		{
+			m_deck[Deckpos] = Card((Card::Rank)j, (Card::Suit)i);
+			Deckpos++;
+		}
+		
+	}
+}
+
+Deck::~Deck()
+{
+}
+
+void Deck::print() const
+{
+	for (auto card : m_deck)
+	{
+		card.print();
+		std::cout << " ";
+	}
+	std::cout << std::endl;
 }
 
 
+
+int main()
+{
+	Deck deck{};
+	deck.print();
+	//deck.shuffle();
+	//deck.print();
+
+	return 0;
+}
 
 
 
