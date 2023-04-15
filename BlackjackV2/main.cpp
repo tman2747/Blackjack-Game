@@ -130,6 +130,7 @@ public:
 	Deck();
 	~Deck();
 	void print()const;
+	void shuffle();
 
 
 };
@@ -162,14 +163,21 @@ void Deck::print() const
 	std::cout << std::endl;
 }
 
+void Deck::shuffle()
+{
+	static std::mt19937 mt{ static_cast<std::mt19937::result_type>(std::time(nullptr)) };
+
+	std::shuffle(m_deck.begin(), m_deck.end(), mt);
+}
+
 
 
 int main()
 {
 	Deck deck{};
 	deck.print();
-	//deck.shuffle();
-	//deck.print();
+	deck.shuffle();
+	deck.print();
 
 	return 0;
 }
