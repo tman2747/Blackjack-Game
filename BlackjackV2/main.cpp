@@ -125,12 +125,14 @@ class Deck
 {
 private:
 	std::array<Card,52> m_deck;
+	int m_cardIndex{0};
 
 public:
 	Deck();
 	~Deck();
 	void print()const;
 	void shuffle();
+	const Card& dealCard();
 
 
 };
@@ -155,7 +157,7 @@ Deck::~Deck()
 
 void Deck::print() const
 {
-	for (auto card : m_deck)
+	for (const auto& card : m_deck)
 	{
 		card.print();
 		std::cout << " ";
@@ -168,8 +170,15 @@ void Deck::shuffle()
 	static std::mt19937 mt{ static_cast<std::mt19937::result_type>(std::time(nullptr)) };
 
 	std::shuffle(m_deck.begin(), m_deck.end(), mt);
+	m_cardIndex = 0;
 }
 
+const Card& Deck::dealCard()
+{
+	assert(m_cardIndex < m_deck.size() && "Ran out of cards in the deck");
+
+	return m_deck[m_cardIndex++];
+}
 
 
 int main()
@@ -178,6 +187,9 @@ int main()
 	deck.print();
 	deck.shuffle();
 	deck.print();
+
+	std::cout << deck.dealCard().value() << std::endl;
+	std::cout << deck.dealCard().value();
 
 	return 0;
 }
