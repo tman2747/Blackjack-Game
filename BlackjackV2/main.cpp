@@ -180,62 +180,93 @@ const Card& Deck::dealCard()
 	return m_deck[m_cardIndex++];
 }
 
+class Player
+{
+private:
+	int m_value{ 0 };
+	const static int g_maximumScore{ 21 };
+
+
+public:
+	Player();
+	bool isBust();
+	int drawCard(Deck& deck);
+	int score();
+
+
+};
+
+Player::Player()
+{
+}
+
+
+bool Player::isBust()
+{
+	return (m_value > g_maximumScore);
+}
+
+int Player::drawCard(Deck& deck)
+{
+	int thecard = deck.dealCard().value();
+	m_value += thecard;
+	return thecard;
+}
+
+int Player::score()
+{
+	return m_value;
+}
+
+void playBlackjack(Deck deck)
+{
+	while (true)
+	{
+		Player player{};
+		Player dealer{};
+		
+		int playercard{ player.drawCard(deck) };
+		std::cout << "you drew a " << playercard << " for a total of " << player.score() << std::endl;
+
+		int dealercard{ dealer.drawCard(deck) };
+		std::cout << "The dealer drew a " << dealercard << " for a total of " << dealer.score() << std::endl;
+
+		playercard = player.drawCard(deck);
+		std::cout << "you drew a " << playercard << " for a total of " << player.score() << std::endl;
+		
+		while (!player.isBust())
+		{
+			std::cout << "H to Hit or S to Stand" << std::endl;
+			char hitstand{};
+			std::cin >> hitstand;
+
+			if (hitstand == 'H')
+			{
+				playercard = player.drawCard(deck);
+				std::cout << "you drew a " << playercard << " for a total of " << player.score() << std::endl;
+				
+
+
+			}
+		}
+		std::cout << std::endl;
+		std::cout << std::endl;
+	}
+}
 
 int main()
 {
 	Deck deck{};
-	deck.print();
-	deck.shuffle();
-	deck.print();
 
-	std::cout << deck.dealCard().value() << std::endl;
-	std::cout << deck.dealCard().value();
+	deck.shuffle();
+	playBlackjack(deck);
+
 
 	return 0;
 }
 
 
 
-
-//enum class CardSuit
-//{
-//    club,
-//    diamond,
-//    heart,
-//    spade,
-//
-//    max_suits
-//};
-//
-//enum class CardRank
-//{
-//    rank_2,
-//    rank_3,
-//    rank_4,
-//    rank_5,
-//    rank_6,
-//    rank_7,
-//    rank_8,
-//    rank_9,
-//    rank_10,
-//    rank_jack,
-//    rank_queen,
-//    rank_king,
-//    rank_ace,
-//
-//    max_ranks
-//};
-//
-//struct Card
-//{
-//    CardRank rank{};
-//    CardSuit suit{};
-//};
-//
-//struct Player
-//{
-//    int score{};
-//};
 //
 //using Deck = std::array<Card, 52>;
 //using Index = Deck::size_type;
@@ -246,101 +277,7 @@ int main()
 //// Minimum score that the dealer has to have.
 //constexpr int g_minimumDealerScore{ 17 };
 //
-//void printCard(const Card& card)
-//{
-//    switch (card.rank)
-//    {
-//    case CardRank::rank_2:      std::cout << '2';   break;
-//    case CardRank::rank_3:      std::cout << '3';   break;
-//    case CardRank::rank_4:      std::cout << '4';   break;
-//    case CardRank::rank_5:      std::cout << '5';   break;
-//    case CardRank::rank_6:      std::cout << '6';   break;
-//    case CardRank::rank_7:      std::cout << '7';   break;
-//    case CardRank::rank_8:      std::cout << '8';   break;
-//    case CardRank::rank_9:      std::cout << '9';   break;
-//    case CardRank::rank_10:     std::cout << 'T';   break;
-//    case CardRank::rank_jack:   std::cout << 'J';   break;
-//    case CardRank::rank_queen:  std::cout << 'Q';   break;
-//    case CardRank::rank_king:   std::cout << 'K';   break;
-//    case CardRank::rank_ace:    std::cout << 'A';   break;
-//    default:
-//        std::cout << '?';
-//        break;
-//    }
 //
-//    switch (card.suit)
-//    {
-//    case CardSuit::club:       std::cout << 'C';   break;
-//    case CardSuit::diamond:    std::cout << 'D';   break;
-//    case CardSuit::heart:      std::cout << 'H';   break;
-//    case CardSuit::spade:      std::cout << 'S';   break;
-//    default:
-//        std::cout << '?';
-//        break;
-//    }
-//}
-//
-//int getCardValue(const Card& card)
-//{
-//    switch (card.rank)
-//    {
-//    case CardRank::rank_2:        return 2;
-//    case CardRank::rank_3:        return 3;
-//    case CardRank::rank_4:        return 4;
-//    case CardRank::rank_5:        return 5;
-//    case CardRank::rank_6:        return 6;
-//    case CardRank::rank_7:        return 7;
-//    case CardRank::rank_8:        return 8;
-//    case CardRank::rank_9:        return 9;
-//    case CardRank::rank_10:       return 10;
-//    case CardRank::rank_jack:     return 10;
-//    case CardRank::rank_queen:    return 10;
-//    case CardRank::rank_king:     return 10;
-//    case CardRank::rank_ace:      return 11;
-//    default:
-//        assert(false && "should never happen");
-//        return 0;
-//    }
-//}
-//
-//void printDeck(const Deck& deck)
-//{
-//    for (const auto& card : deck)
-//    {
-//        printCard(card);
-//        std::cout << ' ';
-//    }
-//
-//    std::cout << '\n';
-//}
-//
-//Deck createDeck()
-//{
-//    Deck deck{};
-//
-//    // We could initialize each card individually, but that would be a pain.  Let's use a loop.
-//
-//    Index index{ 0 };
-//
-//    for (int suit{ 0 }; suit < static_cast<int>(CardSuit::max_suits); ++suit)
-//    {
-//        for (int rank{ 0 }; rank < static_cast<int>(CardRank::max_ranks); ++rank)
-//        {
-//            deck[index].suit = static_cast<CardSuit>(suit);
-//            deck[index].rank = static_cast<CardRank>(rank);
-//            ++index;
-//        }
-//    }
-//
-//    return deck;
-//}
-//
-//void shuffleDeck(Deck& deck)
-//{
-//    static std::mt19937 mt{ static_cast<std::mt19937::result_type>(std::time(nullptr)) };
-//
-//    std::shuffle(deck.begin(), deck.end(), mt);
-//}
 //
 //bool playerWantsHit()
 //{
