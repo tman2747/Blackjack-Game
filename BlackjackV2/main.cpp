@@ -192,6 +192,8 @@ public:
 	bool isBust();
 	int drawCard(Deck& deck);
 	int score();
+	bool playerTurn(Deck deck);
+	bool playerWantsHit();
 
 
 };
@@ -218,39 +220,89 @@ int Player::score()
 	return m_value;
 }
 
-void playBlackjack(Deck deck)
+
+
+bool Player::playerWantsHit()
+{
+	while (true)
+	{
+		std::cout << "(h) to hit, or (s) to stand: ";
+
+		char ch{};
+		std::cin >> ch;
+
+		switch (ch)
+		{
+		case 'h':
+			return true;
+		case 's':
+			return false;
+		}
+	}
+}
+
+bool Player::playerTurn(Deck deck)
+{
+	while (true)
+	{
+		if (m_value > g_maximumScore)
+		{
+			// This can happen even before the player had a choice if they drew 2
+			// aces.
+			std::cout << "You busted!\n";
+			return true;
+		}
+		else
+		{
+			if (playerWantsHit())
+			{
+				int cardValue{ deck.dealCard().value() };
+				m_value += cardValue;
+				std::cout << "You were dealt a " << cardValue << " and now have " << m_value << '\n';
+			}
+			else
+			{
+				// The player didn't go bust.
+				return false;
+			}
+		}
+	}
+}
+
+bool playBlackjack(Deck deck)
 {
 	while (true)
 	{
 		Player player{};
 		Player dealer{};
 		
-		int playercard{ player.drawCard(deck) };
-		std::cout << "you drew a " << playercard << " for a total of " << player.score() << std::endl;
-
-		int dealercard{ dealer.drawCard(deck) };
-		std::cout << "The dealer drew a " << dealercard << " for a total of " << dealer.score() << std::endl;
-
-		playercard = player.drawCard(deck);
-		std::cout << "you drew a " << playercard << " for a total of " << player.score() << std::endl;
+		    // Index of the card that will be drawn next. This cannot overrun
+		    // the array, because a player will lose before all cards are used up.
 		
-		while (!player.isBust())
-		{
-			std::cout << "H to Hit or S to Stand" << std::endl;
-			char hitstand{};
-			std::cin >> hitstand;
-
-			if (hitstand == 'H')
-			{
-				playercard = player.drawCard(deck);
-				std::cout << "you drew a " << playercard << " for a total of " << player.score() << std::endl;
-				
-
-
-			}
-		}
-		std::cout << std::endl;
-		std::cout << std::endl;
+		    // Create the dealer and give them 1 card.
+		dealer.drawCard(deck);
+		
+		    // The dealer's card is face up, the player can see it.
+		std::cout << "The dealer is showing: " << dealer.score() << '\n';
+		
+		    // Create the player and give them 2 cards.
+		player.drawCard(deck);
+		player.drawCard(deck);
+		std::cout << "You have: " << player.score() << '\n';
+		
+		    if (player.playerTurn(deck))
+		    {
+		        // The player went bust.
+		        return false;
+		    }
+		
+		    if (dealer.playerTurn(deck))
+		    {
+		        // The dealer went bust, the player wins.
+		        return true;
+		    }
+		
+		    return (player.score() > dealer.score());
 	}
 }
 
