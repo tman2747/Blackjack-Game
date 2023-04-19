@@ -361,7 +361,7 @@ int main()
 }
 
 
-
+// Code from orignal blackjack before we put it into classes
 //
 //using Deck = std::array<Card, 52>;
 //using Index = Deck::size_type;
