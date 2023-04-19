@@ -270,7 +270,7 @@ bool Player::playerTurn(Deck deck)
 			{
 				int cardValue{ deck.dealCard().value() };
 				m_value += cardValue;
-				std::cout << "You were dealt a " << cardValue << " and now have " << m_value << '\n';
+				std::cout << "You were dealt a " << cardValue << " and now have " << m_value << std::endl;
 			}
 			else
 			{
@@ -308,6 +308,7 @@ bool playBlackjack(Deck deck)
 		        return false;
 		    }
 		
+			// maybe switch this to a if ? : thingy (its The conditional operator (or Ternary operator) chapter5.5)
 		    if (dealer.dealerWantsHit(deck))
 		    {
 		        // The dealer went bust, the player wins.
@@ -318,12 +319,42 @@ bool playBlackjack(Deck deck)
 	}
 }
 
+
+bool playagain()
+{
+	std::cout << "would you like to play again ('y' for yes anything else for no)";
+	char choice{};
+	std::cin >> choice;
+
+
+	if (choice == 'y' || choice == 'Y')
+	{
+		system("cls");
+		return true;
+	}
+
+	return false;
+}
+
 int main()
 {
 	Deck deck{};
 
-	deck.shuffle();
-	playBlackjack(deck);
+
+	// maybe switch this to a if ? : thingy (its The conditional operator (or Ternary operator) chapter5.5)
+	do
+	{
+		deck.shuffle();
+
+		if (playBlackjack(deck))
+		{
+			std::cout << "you win!" << std::endl;
+		}
+		else
+		{
+			std::cout << "dealer wins" << std::endl;
+		}
+	} while (playagain());
 
 
 	return 0;
