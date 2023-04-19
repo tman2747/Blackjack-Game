@@ -194,6 +194,7 @@ public:
 	int score();
 	bool playerTurn(Deck deck);
 	bool playerWantsHit();
+	bool dealerWantsHit(Deck deck);
 
 
 };
@@ -239,6 +240,17 @@ bool Player::playerWantsHit()
 			return false;
 		}
 	}
+}
+
+bool Player::dealerWantsHit(Deck deck)
+{
+	while (m_value < 17)
+	{
+		int cardValue = deck.dealCard().value();
+		m_value += cardValue;
+		std::cout << "The Dealer drew a " << cardValue << " for a total of " << m_value << std::endl;
+	}
+	return isBust();
 }
 
 bool Player::playerTurn(Deck deck)
@@ -296,7 +308,7 @@ bool playBlackjack(Deck deck)
 		        return false;
 		    }
 		
-		    if (dealer.playerTurn(deck))
+		    if (dealer.dealerWantsHit(deck))
 		    {
 		        // The dealer went bust, the player wins.
 		        return true;
