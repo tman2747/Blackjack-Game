@@ -14,6 +14,10 @@
 #include "glad.h"
 #include "GLFW/glfw3.h"
 
+//imgui
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 
 bool playBlackjack(Deck deck)
@@ -84,7 +88,10 @@ void processInput(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, true);
 	}
 }
-
+void Buttondebug()
+{
+	std::cout << "Button Pressed" << std::endl;
+}
 
 int main()
 {
@@ -105,6 +112,7 @@ int main()
 		return 1;
 	}
 	glfwMakeContextCurrent(window);
+	glfwSwapInterval(1);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -115,11 +123,53 @@ int main()
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+	//ImGui::StyleColorsLight();
+
+	// Setup Platform/Renderer backends
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	const char* glsl_version = "#version 130";
+	ImGui_ImplOpenGL3_Init(glsl_version);
+	// Iamgui state
+	ImVec2 blackjackslider{ 0.0f,0.0f };
 
 	while (!glfwWindowShouldClose(window))
 	{
 		//CHECK for input
 		processInput(window);
+		glfwPollEvents();
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+		bool showdemo = true;
+		if (true)
+			ImGui::ShowDemoWindow(&showdemo);
+
+		{
+			//Deck deck{};
+			//deck.shuffle();
+
+			//if (playBlackjack(deck) ? std::cout << "you win!" << std::endl : std::cout << "dealer wins" << std::endl);
+			// BlackJackWindow
+			ImGui::Begin("BlackJack");
+			if (ImGui::Button("Hit"))
+			{
+				Buttondebug();
+			}
+			ImGui::SliderFloat2("slider", (float*)&blackjackslider,0,1000);
+			ImGui::SetCursorPos(blackjackslider);
+			ImGui::Text("Blackjack V2");
+			ImGui::End();
+		}
 
 		//rendering
 		//background
@@ -128,25 +178,20 @@ int main()
 
 
 
+
 		//swap buffer and poll for events
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
-		glfwPollEvents();
 
 	}
 
 	glfwTerminate();
 
-	Deck deck{};
+
 	
 
 	// maybe switch this to a if ? : thingy (its The conditional operator (or Ternary operator) chapter5.5)
-	do
-	{
-		deck.shuffle();
-
-		if (playBlackjack(deck) ? std::cout << "you win!" << std::endl : std::cout << "dealer wins" << std::endl);
-
-	} while (playagain());
 
 
 	return 0;
