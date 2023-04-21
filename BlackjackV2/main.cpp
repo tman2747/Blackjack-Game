@@ -4,9 +4,16 @@
 #include <ctime> // std::time
 #include <iostream>
 #include <random> // std::mt19937
-#include "Card.h"
-#include "Deck.h"
+#include "Card.h" // might not be needed in main
+#include "Deck.h" // might not be needed in main
 #include "Player.h"
+
+//OPENGL /UI INCLUDES
+
+#include <stdio.h>
+#include "glad.h"
+#include "GLFW/glfw3.h"
+
 
 
 bool playBlackjack(Deck deck)
@@ -47,7 +54,7 @@ bool playBlackjack(Deck deck)
 
 bool playagain()
 {
-	std::cout << "would you like to play again ('y' for yes anything else for no)";
+	std::cout << "would you like to play again ('y' for yes anything else for no): ";
 	char choice{};
 	std::cin >> choice;
 
@@ -61,24 +68,84 @@ bool playagain()
 	return false;
 }
 
+
+// opengl functions
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+
+	std::cout << "Width: " << width << " height: " << height << std::endl;
+}
+
+void processInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
+		glfwSetWindowShouldClose(window, true);
+	}
+}
+
+
 int main()
 {
-	Deck deck{};
+	// opengl glfw glew
+	if (!glfwInit())
+	{
+		return 1;
+	}
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+	GLFWwindow* window = glfwCreateWindow(500, 500, "my Window", NULL, NULL);
+	if (window == NULL)
+	{
+		std::cout << "window was NULL :(" << std::endl;
+		glfwTerminate();
+		return 1;
+	}
+	glfwMakeContextCurrent(window);
+
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	{
+		std::cout << "failed to initialize glad :(" << std::endl;
+		glfwTerminate();
+		return 1;
+	}
+
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+
+	while (!glfwWindowShouldClose(window))
+	{
+		//CHECK for input
+		processInput(window);
+
+		//rendering
+		//background
+		glClearColor(0.2f, 0.5f, 0.8f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+
+
+		//swap buffer and poll for events
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+
+	}
+
+	glfwTerminate();
+
+	Deck deck{};
+	
 
 	// maybe switch this to a if ? : thingy (its The conditional operator (or Ternary operator) chapter5.5)
 	do
 	{
 		deck.shuffle();
 
-		if (playBlackjack(deck))
-		{
-			std::cout << "you win!" << std::endl;
-		}
-		else
-		{
-			std::cout << "dealer wins" << std::endl;
-		}
+		if (playBlackjack(deck) ? std::cout << "you win!" << std::endl : std::cout << "dealer wins" << std::endl);
+
 	} while (playagain());
 
 
