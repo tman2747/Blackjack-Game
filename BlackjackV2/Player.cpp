@@ -27,10 +27,8 @@ bool Player::playerWantsHit()
 	while (true)
 	{
 		std::cout << "(h) to hit, or (s) to stand: ";
-
 		char ch{};
 		std::cin >> ch;
-
 		switch (ch)
 		{
 		case 'h':

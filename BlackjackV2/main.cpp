@@ -22,37 +22,40 @@
 
 bool playBlackjack(Deck deck)
 {
+	while (true)
+	{
 		Player player{};
 		Player dealer{};
-		
-		    // Index of the card that will be drawn next. This cannot overrun
-		    // the array, because a player will lose before all cards are used up.
-		
-		    // Create the dealer and give them 1 card.
+
+		// Index of the card that will be drawn next. This cannot overrun
+		// the array, because a player will lose before all cards are used up.
+
+		// Create the dealer and give them 1 card.
 		dealer.drawCard(deck);
-		
-		    // The dealer's card is face up, the player can see it.
+
+		// The dealer's card is face up, the player can see it.
 		std::cout << "The dealer is showing: " << dealer.score() << '\n';
-		
-		    // Create the player and give them 2 cards.
+
+		// Create the player and give them 2 cards.
 		player.drawCard(deck);
 		player.drawCard(deck);
 		std::cout << "You have: " << player.score() << '\n';
-		
-		    if (player.playerTurn(deck))
-		    {
-		        // The player went bust.
-		        return false;
-		    }
-		
-			// maybe switch this to a if ? : thingy (its The conditional operator (or Ternary operator) chapter5.5)
-		    if (dealer.dealerWantsHit(deck))
-		    {
-		        // The dealer went bust, the player wins.
-		        return true;
-		    }
-		
-		    return (player.score() > dealer.score());
+
+		if (player.playerTurn(deck))
+		{
+			// The player went bust.
+			return false;
+		}
+
+		// maybe switch this to a if ? : thingy (its The conditional operator (or Ternary operator) chapter5.5)
+		if (dealer.dealerWantsHit(deck))
+		{
+			// The dealer went bust, the player wins.
+			return true;
+		}
+
+		return (player.score() > dealer.score());
+	}
 }
 
 
@@ -155,15 +158,14 @@ int main()
 			ImGui::ShowDemoWindow(&showdemo);
 
 		{
-			//Deck deck{};
-			//deck.shuffle();
+			Deck deck{};
+			deck.shuffle();
 
-			//if (playBlackjack(deck) ? std::cout << "you win!" << std::endl : std::cout << "dealer wins" << std::endl);
 			// BlackJackWindow
 			ImGui::Begin("BlackJack");
 			if (ImGui::Button("Hit"))
 			{
-				Buttondebug();
+				playBlackjack(deck);
 			}
 			ImGui::SliderFloat2("slider", (float*)&blackjackslider,0,1000);
 			ImGui::SetCursorPos(blackjackslider);
