@@ -86,7 +86,7 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
-	GLFWwindow* window = glfwCreateWindow(1329, 688, "my Window", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1329, 688, "Blackjack", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "window was NULL :(" << std::endl;
@@ -150,6 +150,10 @@ int main()
 			windowFlags += ImGuiWindowFlags_NoMove;
 			windowFlags += ImGuiWindowFlags_NoResize;
 
+			const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
+			ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 0, main_viewport->WorkPos.y + 0), ImGuiCond_FirstUseEver);
+			ImGui::SetNextWindowSize(ImVec2(1337, 695), ImGuiCond_FirstUseEver);
+
 			ImGui::Begin("BlackJack",NULL,windowFlags);
 			ImGui::SetCursorPos(ImVec2(644, 28));
 			ImGui::Text("Blackjack V2");
@@ -179,7 +183,7 @@ int main()
 			}
 			if (gameover)
 			{
-				if (player.score() > dealer.score() || dealer.score() > 21)
+				if ((player.score() > dealer.score() || dealer.score() > 21) && player.score() <= 21)
 				{
 					ImGui::SetCursorPos(ImVec2(660, 300));
 					ImGui::Text("You win!");
