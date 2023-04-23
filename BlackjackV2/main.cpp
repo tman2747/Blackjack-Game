@@ -175,7 +175,7 @@ int main()
 				}
 			}
 			ImGui::SameLine();
-			if (ImGui::Button("Stand"))
+			if (ImGui::Button("Stand") && !gameover)
 			{
 				// if dealer busts
 				dealer.dealerWantsHit(deck);
