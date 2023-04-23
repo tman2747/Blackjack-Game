@@ -81,6 +81,7 @@ int main()
 	}
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	GLFWwindow* window = glfwCreateWindow(1329, 688, "my Window", NULL, NULL);
@@ -134,13 +135,17 @@ int main()
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		bool showdemo = true;
-		if (true)
-			ImGui::ShowDemoWindow(&showdemo);
+		//if (true)
+		//	ImGui::ShowDemoWindow(&showdemo);
 
 
 		{
 			// BlackJackWindow
-			ImGui::Begin("BlackJack");
+			ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar;
+			windowFlags += ImGuiWindowFlags_NoMove;
+			windowFlags += ImGuiWindowFlags_NoResize;
+
+			ImGui::Begin("BlackJack",NULL,windowFlags);
 			ImGui::SetCursorPos(ImVec2(644, 28));
 			ImGui::Text("Blackjack V2");
 			ImGui::SetCursorPos(ImVec2(636, 60));
