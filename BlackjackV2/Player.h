@@ -18,6 +18,6 @@ public:
 	bool playerTurn(Deck deck);
 	bool playerWantsHit();
 	bool dealerWantsHit(Deck deck);
-
+	void reset(Deck& deck, Player& dealer);
 
 };

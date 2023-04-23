@@ -41,6 +41,7 @@ bool Player::playerWantsHit()
 
 bool Player::dealerWantsHit(Deck deck)
 {
+	// returns true if dealer bust false if not
 	while (m_value < 17)
 	{
 		int cardValue = deck.dealCard().value();
@@ -76,4 +77,12 @@ bool Player::playerTurn(Deck deck)
 			}
 		}
 	}
+}
+void Player::reset(Deck& deck, Player& dealer)
+{
+	// resets player dealer and shuffles the deck.
+	// (shuffling the deck also resets deck index pos)
+	m_value = 0;
+	dealer.m_value = 0;
+	deck.shuffle();
 }

@@ -20,17 +20,8 @@
 #include "imgui_impl_opengl3.h"
 
 
-bool playBlackjack(Deck deck)
+void playBlackjack(Deck& deck, Player& player, Player& dealer)
 {
-	while (true)
-	{
-		Player player{};
-		Player dealer{};
-
-		// Index of the card that will be drawn next. This cannot overrun
-		// the array, because a player will lose before all cards are used up.
-
-		// Create the dealer and give them 1 card.
 		dealer.drawCard(deck);
 
 		// The dealer's card is face up, the player can see it.
@@ -41,21 +32,6 @@ bool playBlackjack(Deck deck)
 		player.drawCard(deck);
 		std::cout << "You have: " << player.score() << '\n';
 
-		if (player.playerTurn(deck))
-		{
-			// The player went bust.
-			return false;
-		}
-
-		// maybe switch this to a if ? : thingy (its The conditional operator (or Ternary operator) chapter5.5)
-		if (dealer.dealerWantsHit(deck))
-		{
-			// The dealer went bust, the player wins.
-			return true;
-		}
-
-		return (player.score() > dealer.score());
-	}
 }
 
 
@@ -107,7 +83,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(500, 500, "my Window", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1329, 688, "my Window", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "window was NULL :(" << std::endl;
@@ -142,8 +118,12 @@ int main()
 	const char* glsl_version = "#version 130";
 	ImGui_ImplOpenGL3_Init(glsl_version);
 	// Iamgui state
-	ImVec2 blackjackslider{ 0.0f,0.0f };
-
+	Deck deck{};
+	deck.shuffle();
+	Player player{};
+	Player dealer{};
+	playBlackjack(deck, player, dealer);
+	bool gameover = false;
 	while (!glfwWindowShouldClose(window))
 	{
 		//CHECK for input
@@ -157,19 +137,56 @@ int main()
 		if (true)
 			ImGui::ShowDemoWindow(&showdemo);
 
-		{
-			Deck deck{};
-			deck.shuffle();
 
+		{
 			// BlackJackWindow
 			ImGui::Begin("BlackJack");
-			if (ImGui::Button("Hit"))
-			{
-				playBlackjack(deck);
-			}
-			ImGui::SliderFloat2("slider", (float*)&blackjackslider,0,1000);
-			ImGui::SetCursorPos(blackjackslider);
+			ImGui::SetCursorPos(ImVec2(644, 28));
 			ImGui::Text("Blackjack V2");
+			ImGui::SetCursorPos(ImVec2(636, 60));
+			ImGui::Text("Dealer Score: %i", dealer.score());
+			ImGui::SetCursorPos(ImVec2(636, 580));
+			ImGui::Text("Player Score: %i", player.score());
+			ImGui::SetCursorPos(ImVec2(646, 614));
+			if (ImGui::Button("Hit") && !player.isBust())
+			{
+				player.drawCard(deck);
+				std::cout << "You have: " << player.score() << '\n';
+
+				if (player.isBust())
+				{
+					//player bust
+					std::cout << "you bust" << std::endl;
+					gameover = true;
+				}
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Stand"))
+			{
+				// if dealer busts
+				dealer.dealerWantsHit(deck);
+				gameover = true;
+			}
+			if (gameover)
+			{
+				if (player.score() > dealer.score() || dealer.score() > 21)
+				{
+					ImGui::SetCursorPos(ImVec2(660, 300));
+					ImGui::Text("You win!");
+				}
+				else
+				{
+					ImGui::SetCursorPos(ImVec2(660, 300));
+					ImGui::Text("You Lose!");
+				}
+				ImGui::SetCursorPos(ImVec2(650, 330));
+				if (ImGui::Button("Play again?"))
+				{
+					gameover = false;
+					player.reset(deck, dealer);
+					playBlackjack(deck, player, dealer);
+				}
+			}
 			ImGui::End();
 		}
 
@@ -189,9 +206,6 @@ int main()
 	}
 
 	glfwTerminate();
-
-
-	
 
 	// maybe switch this to a if ? : thingy (its The conditional operator (or Ternary operator) chapter5.5)
 
