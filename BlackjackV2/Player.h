@@ -12,6 +12,7 @@ private:
 
 public:
 	Player();
+	~Player();
 	bool isBust();
 	int drawCard(Deck& deck);
 	int score();

@@ -81,8 +81,10 @@ int main()
 	}
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	// Window hint setting main window to be non resizable
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 
 	GLFWwindow* window = glfwCreateWindow(1329, 688, "my Window", NULL, NULL);
 	if (window == NULL)
@@ -118,13 +120,16 @@ int main()
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	const char* glsl_version = "#version 130";
 	ImGui_ImplOpenGL3_Init(glsl_version);
-	// Iamgui state
+
+
+	// Iamgui / blackjack state
 	Deck deck{};
 	deck.shuffle();
 	Player player{};
 	Player dealer{};
 	playBlackjack(deck, player, dealer);
 	bool gameover = false;
+
 	while (!glfwWindowShouldClose(window))
 	{
 		//CHECK for input

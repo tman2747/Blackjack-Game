@@ -16,6 +16,7 @@ Deck::Deck()
 
 Deck::~Deck()
 {
+	std::cout << "Deck Destroyed" << std::endl;
 }
 
 void Deck::print() const

@@ -4,6 +4,10 @@ Player::Player()
 {
 }
 
+Player::~Player()
+{
+	std::cout << "Player Destroyed" <<std::endl;
+}
 
 bool Player::isBust()
 {
