@@ -153,7 +153,7 @@ int main()
 			ImGui::SetCursorPos(ImVec2(636, 580));
 			ImGui::Text("Player Score: %i", player.score());
 			ImGui::SetCursorPos(ImVec2(646, 614));
-			if (ImGui::Button("Hit") && !player.isBust())
+			if (ImGui::Button("Hit") && !player.isBust() && !gameover)
 			{
 				player.drawCard(deck);
 				std::cout << "You have: " << player.score() << '\n';
