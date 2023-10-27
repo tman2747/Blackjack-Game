@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Deck.h"
 #include "imgui.h"
+#include "Logging.h"
 
 class Player
 {
@@ -11,7 +12,7 @@ private:
 
 
 public:
-	Player();
+	Player(Logging &logger);
 	~Player();
 	bool isBust();
 	int drawCard(Deck& deck);

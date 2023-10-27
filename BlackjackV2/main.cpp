@@ -18,19 +18,22 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "Logging.h"
 
+Logging Log;
 
 void playBlackjack(Deck& deck, Player& player, Player& dealer)
 {
 		dealer.drawCard(deck);
 
 		// The dealer's card is face up, the player can see it.
-		std::cout << "The dealer is showing: " << dealer.score() << '\n';
+		Log.debugLog(Logging::info, "Dealer is showing: " + std::to_string(dealer.score()));
 
 		// Create the player and give them 2 cards.
 		player.drawCard(deck);
 		player.drawCard(deck);
-		std::cout << "You have: " << player.score() << '\n';
+		Log.debugLog(Logging::info, "you have: " + std::to_string(player.score()));
+		//std::cout << "You have: " << player.score() << '\n';
 
 }
 
@@ -77,6 +80,7 @@ int main()
 	// opengl glfw glew
 	if (!glfwInit())
 	{
+		Log.debugLog(Logging::error, "GLFW failed to Init");
 		return 1;
 	}
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -89,7 +93,7 @@ int main()
 	GLFWwindow* window = glfwCreateWindow(1329, 688, "Blackjack", NULL, NULL);
 	if (window == NULL)
 	{
-		std::cout << "window was NULL :(" << std::endl;
+		Log.debugLog(Logging::error, "Window was NULL");
 		glfwTerminate();
 		return 1;
 	}
@@ -98,7 +102,7 @@ int main()
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-		std::cout << "failed to initialize glad :(" << std::endl;
+		Log.debugLog(Logging::error, "Failed to Inizialize Glad");
 		glfwTerminate();
 		return 1;
 	}
@@ -125,8 +129,8 @@ int main()
 	// Iamgui / blackjack state
 	Deck deck{};
 	deck.shuffle();
-	Player player{};
-	Player dealer{};
+	Player player(Log);
+	Player dealer(Log);
 	playBlackjack(deck, player, dealer);
 	bool gameover = false;
 
@@ -140,14 +144,14 @@ int main()
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		bool showdemo = true;
-		//if (true)
-		//	ImGui::ShowDemoWindow(&showdemo);
+		if (true)
+			ImGui::ShowDemoWindow(&showdemo);
 
-
+		bool no_titlebar = false;
 		{
 			// BlackJackWindow
 			ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar;
-			windowFlags += ImGuiWindowFlags_NoMove;
+			//windowFlags += ImGuiWindowFlags_NoMove;
 			windowFlags += ImGuiWindowFlags_NoResize;
 
 			const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
@@ -221,7 +225,6 @@ int main()
 
 	glfwTerminate();
 
-	// maybe switch this to a if ? : thingy (its The conditional operator (or Ternary operator) chapter5.5)
 
 
 	return 0;
